@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <script src="assets/js/color-modes.js"></script>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.118.2" />
+    <title>Signin Template · Bootstrap v5.3</title>
+
+    <link
+      rel="canonical"
+      href="https://getbootstrap.com/docs/5.3/examples/sign-in/"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
+    />
+
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="sign-in.css" rel="stylesheet" />
+  </head>
+  <body class="d-flex align-items-center py-4 bg-body-tertiary">
+    <main class="form-signin w-100 m-auto">
+      <form id="form" action="/login" method="post" autocomplete="off" enctype="multipart/form-data">
+        <img
+          class="mb-4"
+          src="assets/brand/bootstrap-logo.svg"
+          alt=""
+          width="72"
+          height="57"
+        />
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+        <div class="form-floating">
+          <input
+            type="email"
+            class="form-control"
+            id="userName"
+            name="userName"
+            placeholder="name@example.com"
+          />
+          <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating">
+          <input
+            type="password"
+            class="form-control"
+            id="userPassword"
+            name="userPassword"
+            placeholder="Password"
+          />
+          <label for="floatingPassword">Password</label>
+        </div>
+
+        <div id="err">
+        
+        </div>
+        <button class="btn btn-primary w-100 py-2" type="submit">
+          Sign in
+        </button>
+      </form>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+      $(document).ready(function(e) {
+        $("#form").on('submit', (function(e) {
+          var count = 0;
+          e.preventDefault();
+          let email = $("#userName").val();
+          let password = $('#userPassword').val();
+          // checking for the validation 
+          if (email == "" || email == " ") {
+            $('#userName').addClass('is-invalid');
+          } else {
+            count = count + 1;
+            $('#userName').removeClass('is-invalid');
+            $('#userName').addClass('is-valid');
+          }
+          if (password == "" || password == " ") {
+            $('#userPassword').addClass('is-invalid');
+          } else {
+            count = count + 1;
+            $('#userPassword').removeClass('is-invalid');
+            $('#userPassword').addClass('is-valid');
+          }
+          if (count >= 2) {
+            $.ajax({
+              url: "APIs/login.php",
+              type: "POST",
+              data: new FormData(this),
+              contentType: false,
+              cache: false,
+              processData: false,
+              beforeSend: function() {
+                $("#err").fadeOut();
+              },
+              success: function(data) {
+                if (data.status) {
+                  window.location = "index.php";
+                } else {
+                  $("#err").html("<div class='alert alert-danger' role='alert'>" + data.message + "</div>").fadeIn();
+                   $("#err").fadeOut(4000);
+                  $("#err").slideUp(4000);
+                }
+              },
+              error: function(e) {
+                $("#err").html(e).fadeIn();
+                $("#err").html("<div class='alert alert-danger' role='alert'>"+e.responseJSON.message+"</div>").fadeIn();
+                $("#err").fadeOut(4000);
+              }
+            }); // end of Ajax Request ... 
+          } //end of valid condition ... 
+          else {
+            $("#err").html("<div class='alert alert-danger' role='alert'>Invalid Data! Please Check All Required Fields</div>").fadeIn();
+            $("#err").fadeOut(4000);
+          }
+        }));
+      });
+    </script>
+  </body>
+</html>
