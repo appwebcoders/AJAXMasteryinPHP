@@ -7,14 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             require 'DBConnect.php';
             // checking for valid user details 
-            $SELECT__USER__DATA = "SELECT * FROM `users` WHERE users.username=:userName";
+            $SELECT__USER__DATA = "SELECT * FROM `users` WHERE users.email_id=:userName";
             $select__user__statement = $con->prepare($SELECT__USER__DATA);
             $select__user__statement->bindParam(':userName', $userName, PDO::PARAM_STR);
             $select__user__statement->execute();
             $user__flag = $select__user__statement->rowCount();
             if ($user__flag > 0) {
                 $user__data = $select__user__statement->fetch(PDO::FETCH_ASSOC);
-                if (password_verify($userPassword, $user__data['password'])) {
+                if (($userPassword==$user__data['password'])) {
                     $user__object = array(
                         "fullName"=>$user__data['full_name'],
                         "emailID"=>$user__data['email_id'],
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $server__response__error = array(
                         "code" => http_response_code(),
                         "status" => false,
-                        "message" => "Opps!! Incorrect Login Credentials"
+                        "message" => "Opps!! Incorrect Login Credentials | Password Mismatch"
                     );
                     echo json_encode($server__response__error);
                 }
